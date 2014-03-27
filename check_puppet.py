@@ -19,20 +19,29 @@ def checkit():
     disable_perfdata = False
     warn = 1800
     crit = 3600
+    agent_lockfile = "/var/lib/puppet/state/agent_catalog_run.lock"
+    agent_disabled_lockfile = "/var/lib/puppet/state/agent_disabled.lock"
+    statefile = "/var/lib/puppet/state/state.yaml"
+    summaryfile = "/var/lib/puppet/state/last_run_summary.yaml"
+
     
     if warn == 0 or crit == 0:
         print "Please specify a warning and critical level"
         sys.exit(3)
     
-           enabled = false
-        else:
-           running = true
-    
-        enabled = false
-    
+    if os.path.isfile(agent_lockfile):
+           enabled = False
+    else:
+           running = True
+
+    if os.path.isfile(agent_disabled_lockfile): 
+        enabled = False
+
+    if os.path.isfile(statefile):
+        lastrun=os.stat(statefile)
         print lastrun
-        sys.exit()
-   ''' 
+    sys.exit()
+''' 
         begin
             lastrun = summary["time"]["last_run"]
     
@@ -40,7 +49,7 @@ def checkit():
             unless summary.include?("events")
                 failcount_resources = 99
                 failcount_events = 99
-                total_failure = true
+                total_failure = True
             else:
                 # and unless there are failures, the events hash just wont have the failure count
                 failcount_resources = summary["resources"]["failed"] or 0
@@ -64,7 +73,7 @@ def checkit():
       perfdata_time = "|time_since_last_run=#{time_since_last_run}s;#{warn};#{crit};0 failed_resources=#{failcount_resources};;;0 failed_events=#{failcount_events};;;0"
     
     unless failures
-        if enabled_only && enabled == false:
+        if enabled_only && enabled == False:
             print "OK: Puppet is currently disabled, not alerting. Last run #{time_since_last_run_string} with #{failcount_resources} failed resources #{failcount_events} failed events#{perfdata_time}"
             exit 0
     
@@ -88,7 +97,7 @@ def checkit():
     
             exit 0
     else:
-        if enabled_only && enabled == false:
+        if enabled_only && enabled == False:
             print "OK: Puppet is currently disabled, not alerting. Last run #{time_since_last_run_string} with #{failcount_resources} failed resources #{failcount_events} failed events#{perfdata_time}"
             exit 0
     
