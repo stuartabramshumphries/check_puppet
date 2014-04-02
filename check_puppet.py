@@ -1,10 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import sys
 import os.path
 import time
 
 def checkit():
+    print "in checkit"
     enabled = True
     running = False
     lastrun_failed = False
@@ -19,10 +20,14 @@ def checkit():
     disable_perfdata = False
     warn = 1800
     crit = 3600
-    agent_lockfile = "/var/lib/puppet/state/agent_catalog_run.lock"
-    agent_disabled_lockfile = "/var/lib/puppet/state/agent_disabled.lock"
-    statefile = "/var/lib/puppet/state/state.yaml"
-    summaryfile = "/var/lib/puppet/state/last_run_summary.yaml"
+#    agent_lockfile = "/var/lib/puppet/state/agent_catalog_run.lock"
+#    agent_disabled_lockfile = "/var/lib/puppet/state/agent_disabled.lock"
+#    statefile = "/var/lib/puppet/state/state.yaml"
+#    summaryfile = "/var/lib/puppet/state/last_run_summary.yaml"
+    agent_lockfile = "./logfiles/agent_catalog_run.lock"
+    agent_disabled_lockfile = "./logfiles/agent_disabled.lock"
+    statefile = "./logfiles/state.yaml"
+    summaryfile = "./logfiles/last_run_summary.yaml"
 
     
     if warn == 0 or crit == 0:
@@ -38,14 +43,21 @@ def checkit():
         enabled = False
 
     if os.path.isfile(statefile):
-        lastrun=os.stat(statefile)
+        (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime)=os.stat(statefile)
+        lastrun=mtime
         print lastrun
+
+        try:
+            with open(summaryfile,"r") as fp:
+                for line in fp:
+                    if 'last_run:' in line:
+                        print line,
+        except:
+            print "nada"
+            sys.exit(100)
     sys.exit()
-''' 
-        begin
-            lastrun = summary["time"]["last_run"]
     
-            # it wont have anything but last_run in it
+'''            # it wont have anything but last_run in it
             unless summary.include?("events")
                 failcount_resources = 99
                 failcount_events = 99
@@ -54,11 +66,10 @@ def checkit():
                 # and unless there are failures, the events hash just wont have the failure count
                 failcount_resources = summary["resources"]["failed"] or 0
                 failcount_events = summary["events"]["failure"] or 0
-        rescue
+        except:
             failcount_resources = 0
             failcount_events = 0
             summary = nil
-    
     time_since_last_run = Time.now.to_i - lastrun
     
     time_since_last_run_string = "#{time_since_last_run} seconds ago"
@@ -123,4 +134,5 @@ def checkit():
 
 
 if __name__ == '__main__':
-	checkit()
+    print"starting"
+    checkit()
