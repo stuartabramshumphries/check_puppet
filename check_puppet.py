@@ -1,11 +1,19 @@
 #!/usr/bin/env python
 
 import sys
-import os.path
 import time
+import os.path
+import logging
+import datetime
+import logging.handlers
+from socket import gethostname
+
 
 def checkit():
-    print "in checkit"
+    my_logger = logging.getLogger('MyLogger')
+    my_logger.setLevel(logging.DEBUG)
+    handler = logging.handlers.SysLogHandler(address='/dev/log')
+    my_logger.addHandler(handler)
     enabled = True
     running = False
     lastrun_failed = False
@@ -20,44 +28,49 @@ def checkit():
     disable_perfdata = False
     warn = 1800
     crit = 3600
-#    agent_lockfile = "/var/lib/puppet/state/agent_catalog_run.lock"
-#    agent_disabled_lockfile = "/var/lib/puppet/state/agent_disabled.lock"
-#    statefile = "/var/lib/puppet/state/state.yaml"
-#    summaryfile = "/var/lib/puppet/state/last_run_summary.yaml"
-    agent_lockfile = "./logfiles/agent_catalog_run.lock"
-    agent_disabled_lockfile = "./logfiles/agent_disabled.lock"
-    statefile = "./logfiles/state.yaml"
-    summaryfile = "./logfiles/last_run_summary.yaml"
+    #    agentLockfile = "/var/lib/puppet/state/agent_catalog_run.lock"
+    #    agentDisabledLockfile = "/var/lib/puppet/state/agent_disabled.lock"
+    #    stateFile = "/var/lib/puppet/state/state.yaml"
+    #    lastRunSummary = "/var/lib/puppet/state/last_run_summary.yaml"
+    agentlockfile = '/home/shumphries/monitor-puppet/logfiles/agent_catalog_run.lock'
+    agentdisabledlockfile = "/home/shumphries/monitor-puppet/logfiles/agent_disabled.lock"
+    statefile = "/home/shumphries/monitor-puppet/logfiles/state.yaml"
+    lrsummary = "/home/shumphries/monitor-puppet/logfiles/last_run_summary.yaml"
 
-    
     if warn == 0 or crit == 0:
         print "Please specify a warning and critical level"
         sys.exit(3)
-    
-    if os.path.isfile(agent_lockfile):
-           enabled = False
-    else:
-           running = True
 
-    if os.path.isfile(agent_disabled_lockfile): 
+    if os.path.isfile(agentlockfile):
+        enabled = False
+    else:
+        running = True
+
+    if os.path.isfile(agentdisabledlockfile):
         enabled = False
 
     if os.path.isfile(statefile):
-        (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime)=os.stat(statefile)
-        lastrun=mtime
-        print lastrun
+        (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(statefile)
+        lastrun = mtime
 
-        try:
-            with open(summaryfile,"r") as fp:
-                for line in fp:
-                    if 'last_run:' in line:
-                        print line,
-        except:
-            print "nada"
-            sys.exit(100)
+        with open(lrsummary, "r") as fp:
+            for line in fp:
+                if 'last_run:' in line:
+                    line2 = line.strip()
+                    print line2
+                    l1, l2 = line2.split(":", 1)
+                    l3 = int(l2)
+                    linef = int(l3)
+                    timediff = time.time() - linef
+                    if timediff > 3601:
+                        timediff2 = str(datetime.timedelta(seconds=timediff))
+                        msg = "puppet not run for " + gethostname() + timediff2
+                        my_logger.critical(msg)
+
     sys.exit()
-    
-'''            # it wont have anything but last_run in it
+
+
+'''         # it wont have anything but last_run in it
             unless summary.include?("events")
                 failcount_resources = 99
                 failcount_events = 99
@@ -132,7 +145,5 @@ def checkit():
             exit 0
     '''
 
-
 if __name__ == '__main__':
-    print"starting"
     checkit()
