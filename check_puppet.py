@@ -23,7 +23,8 @@ def check_ok():
         with open(disabledfile,'r') as dis:
             data = yaml.load(dis)
         msg = gethostname() + " Puppet disabled: " + data["disabled_message"]
-        my_logger.critical(msg)
+        print msg
+#        my_logger.critical(msg)
 
     if os.path.isfile(lrsummary):
         with open(lrsummary, "r") as fp:
@@ -33,7 +34,8 @@ def check_ok():
         if timediff > 3601:
            timediff2 = str(datetime.timedelta(seconds=timediff)) 
            msg = "Puppet not run on " + gethostname() + " for " + timediff2
-           my_logger.critical(msg)
+           print msg
+           #my_logger.critical(msg)
 
 '''    if os.path.isfile(statefile):
         (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(statefile)
