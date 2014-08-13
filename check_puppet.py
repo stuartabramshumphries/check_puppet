@@ -15,9 +15,9 @@ def check_ok():
     my_logger.setLevel(logging.DEBUG)
     handler = logging.handlers.SysLogHandler(address='/dev/log')
     my_logger.addHandler(handler)
-    disabledfile = "/home/shumphries/monitor-puppet/logfiles/agent_disabled.lock"
-    lrsummary    = "/home/shumphries/monitor-puppet/logfiles/last_run_summary.yaml"
-    statefile    = "/home/shumphries/monitor-puppet/logfiles/state.yaml"
+    disabledfile = "/var/lib/puppet/state/agent_disabled.lock"
+    lrsummary    = "/var/lib/puppet/state/last_run_summary.yaml"
+    statefile    = "/var/lib/puppet/state/state.yaml"
 
     if os.path.isfile(disabledfile):
         with open(disabledfile,'r') as dis:
