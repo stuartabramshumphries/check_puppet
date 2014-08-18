@@ -13,10 +13,12 @@ from socket import gethostname
 disabledfile = "/home/shumphries/monitor-puppet/logfiles/agent_disabled.lock"
 lrsummary    = "/home/shumphries/monitor-puppet/logfiles/last_run_summary.yaml"
 statefile    = "/home/shumphries/monitor-puppet/logfiles/state.yaml"
+lrreport     = "/home/shumphries/monitor-puppet/logfiles/last_run_report.yaml"
+
 #    agentLockfile = "/var/lib/puppet/state/agent_catalog_run.lock"
-#    agentDisabledLockfile = "/var/lib/puppet/state/agent_disabled.lock"
-#    stateFile = "/var/lib/puppet/state/state.yaml"
-#    lastRunSummary = "/var/lib/puppet/state/last_run_summary.yaml"
+#    disablefile = "/var/lib/puppet/state/agent_disabled.lock"
+#    statefile = "/var/lib/puppet/state/state.yaml"
+#    llreport = "/var/lib/puppet/state/last_run_report.yaml"
 
 
 my_logger = logging.getLogger('MyLogger')
@@ -49,6 +51,19 @@ def check_if_disabled():
         print msg
 #        my_logger.critical(msg)
 
+def check_if_failures():
+    print "in check failures"
+    if os.path.isfile(lrreport):
+        print "found file",lrreport
+        with open(lrreport,'r') as lrr:
+            data = yaml.load(lrr)
+        exit()
+'''        if data["events"]["status"] == "failure":
+            print data["events"]["message"]
+'''        
+
 if __name__ == '__main__':
-    check_last_time_run()
+    check_if_failures()
+''' check_last_time_run()
     check_if_disabled()
+'''
