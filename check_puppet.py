@@ -10,7 +10,7 @@ import logging.handlers
 from socket import gethostname
 
 
-def check_ok():
+def check_last_time_run():
     my_logger = logging.getLogger('MyLogger')
     my_logger.setLevel(logging.DEBUG)
     handler = logging.handlers.SysLogHandler(address='/dev/log')
@@ -35,7 +35,7 @@ def check_ok():
            timediff2 = str(datetime.timedelta(seconds=timediff)) 
            msg = "Puppet not run on " + gethostname() + " for " + timediff2
            print msg
-           #my_logger.critical(msg)
+#          my_logger.critical(msg)
 
 '''    if os.path.isfile(statefile):
         (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(statefile)
@@ -43,4 +43,4 @@ def check_ok():
         '''
 
 if __name__ == '__main__':
-    check_ok()
+    check_last_time_run()
