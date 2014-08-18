@@ -13,6 +13,11 @@ from socket import gethostname
 disabledfile = "/home/shumphries/monitor-puppet/logfiles/agent_disabled.lock"
 lrsummary    = "/home/shumphries/monitor-puppet/logfiles/last_run_summary.yaml"
 statefile    = "/home/shumphries/monitor-puppet/logfiles/state.yaml"
+#    agentLockfile = "/var/lib/puppet/state/agent_catalog_run.lock"
+#    agentDisabledLockfile = "/var/lib/puppet/state/agent_disabled.lock"
+#    stateFile = "/var/lib/puppet/state/state.yaml"
+#    lastRunSummary = "/var/lib/puppet/state/last_run_summary.yaml"
+
 
 my_logger = logging.getLogger('MyLogger')
 my_logger.setLevel(logging.DEBUG)
