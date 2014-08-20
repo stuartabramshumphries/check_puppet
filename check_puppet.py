@@ -76,6 +76,5 @@ def check_if_failures():
 
 if __name__ == '__main__':
     check_if_failures()
-''' check_last_time_run()
-    check_if_disabled()
-'''
+# check_last_time_run()
+#    check_if_disabled()
