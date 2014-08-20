@@ -14,8 +14,8 @@ lrsummary = "/home/shumphries/monitor-puppet/logfiles/last_run_summary.yaml"
 statefile = "/home/shumphries/monitor-puppet/logfiles/state.yaml"
 lrreport = "/home/shumphries/monitor-puppet/logfiles/last_run_report.yaml"
 
-#    agentLockfile = "/var/lib/puppet/state/agent_catalog_run.lock"
-#    disablefile = "/var/lib/puppet/state/agent_disabled.lock"
+#    disabledfile = "/var/lib/puppet/state/agent_disabled.lock"
+#    lrsummary = "/var/lib/puppet/state/last_run_summary.yaml"
 #    statefile = "/var/lib/puppet/state/state.yaml"
 #    llreport = "/var/lib/puppet/state/last_run_report.yaml"
 
